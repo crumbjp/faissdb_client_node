@@ -1,0 +1,26 @@
+{
+  "name": "faiss-db-client",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crumbjp/faissdb_client.git"
+  },
+  "keywords": [
+    "faiss",
+    "ann"
+  ],
+  "author": "hiroaki.kubota@crumb.jp",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/crumbjp/faissdb_client/issues"
+  },
+  "homepage": "https://github.com/crumbjp/faissdb_client#readme",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}
