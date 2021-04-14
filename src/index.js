@@ -2,8 +2,8 @@
 
 const _ = require('lodash');
 
-const FeatureGrpc = require('grpc_feature/feature_grpc_pb');
-const Feature = require('grpc_feature/feature_pb');
+const FeatureGrpc = require('./grpc_feature/feature_grpc_pb');
+const Feature = require('./grpc_feature/feature_pb');
 const FeatureClient = FeatureGrpc.FeatureClient;
 const GrpcJs = require('@grpc/grpc-js');
 
@@ -21,6 +21,7 @@ class Client {
         "grpc.keepalive_time_ms": 3000,
         "grpc.keepalive_timeout_ms": 1000,
         "grpc.keepalive_permit_without_calls": 1,
+        "grpc.max_send_message_length": 100*1024*1024,
       }
     );
   }
