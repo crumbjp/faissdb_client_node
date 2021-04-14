@@ -2,7 +2,7 @@
   "name": "faiss-db-client",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,6 +21,12 @@
   },
   "homepage": "https://github.com/crumbjp/faissdb_client#readme",
   "dependencies": {
+    "@grpc/grpc-js": "^1.2.12",
+    "google-protobuf": "^3.15.8",
     "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "grpc-tools": "^1.11.1",
+    "grpc_tools_node_protoc_ts": "^5.2.1"
   }
 }

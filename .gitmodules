@@ -1,0 +1,3 @@
+[submodule "faissdb"]
+	path = faissdb
+	url = https://github.com/crumbjp/faissdb.git
