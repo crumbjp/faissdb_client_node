@@ -15,6 +15,10 @@ export class Data extends jspb.Message {
     addV(value: number, index?: number): number;
     getSparsev(): string;
     setSparsev(value: string): Data;
+    clearCollectionsList(): void;
+    getCollectionsList(): Array<string>;
+    setCollectionsList(value: Array<string>): Data;
+    addCollections(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Data.AsObject;
@@ -31,6 +35,7 @@ export namespace Data {
         key: string,
         vList: Array<number>,
         sparsev: string,
+        collectionsList: Array<string>,
     }
 }
 
@@ -127,6 +132,8 @@ export class SearchRequest extends jspb.Message {
     addV(value: number, index?: number): number;
     getSparsev(): string;
     setSparsev(value: string): SearchRequest;
+    getCollection(): string;
+    setCollection(value: string): SearchRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SearchRequest.AsObject;
@@ -143,6 +150,7 @@ export namespace SearchRequest {
         n: number,
         vList: Array<number>,
         sparsev: string,
+        collection: string,
     }
 }
 

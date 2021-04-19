@@ -46,6 +46,7 @@ class Client {
    * data: {
    *   key: string
    *   v: `dense vector array` or `sparse vector object`
+   *   collections: `[string] index names`
    * }
   */
   async set(inputs) {
@@ -58,6 +59,7 @@ class Client {
       } else {
         data.setSparsev(this.toSparse(input.v));
       }
+      data.setCollectionsList(input.collections);
       setRequest.addData(data);
     }
     let reply = await this._request('set', setRequest);
@@ -79,9 +81,11 @@ class Client {
 
   /*
    * v: `dense vector array` or `sparse vector object`
+   * collections: string target index name
   */
-  async search(n, v) {
+  async search(collection, n, v) {
     let searchRequest = new Feature.SearchRequest();
+    searchRequest.setCollection(collection);
     searchRequest.setN(n);
     if(_.isArray(v)) {
       searchRequest.setVList(v);

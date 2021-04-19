@@ -219,7 +219,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.feature.Data.repeatedFields_ = [2];
+proto.feature.Data.repeatedFields_ = [2,4];
 
 
 
@@ -254,7 +254,8 @@ proto.feature.Data.toObject = function(includeInstance, msg) {
   var f, obj = {
     key: jspb.Message.getFieldWithDefault(msg, 1, ""),
     vList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 2)) == null ? undefined : f,
-    sparsev: jspb.Message.getFieldWithDefault(msg, 3, "")
+    sparsev: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    collectionsList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -305,6 +306,10 @@ proto.feature.Data.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setSparsev(value);
       break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addCollections(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -352,6 +357,13 @@ proto.feature.Data.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getCollectionsList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      4,
       f
     );
   }
@@ -428,6 +440,43 @@ proto.feature.Data.prototype.getSparsev = function() {
  */
 proto.feature.Data.prototype.setSparsev = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * repeated string collections = 4;
+ * @return {!Array<string>}
+ */
+proto.feature.Data.prototype.getCollectionsList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 4));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.feature.Data} returns this
+ */
+proto.feature.Data.prototype.setCollectionsList = function(value) {
+  return jspb.Message.setField(this, 4, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.feature.Data} returns this
+ */
+proto.feature.Data.prototype.addCollections = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 4, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.feature.Data} returns this
+ */
+proto.feature.Data.prototype.clearCollectionsList = function() {
+  return this.setCollectionsList([]);
 };
 
 
@@ -1049,7 +1098,8 @@ proto.feature.SearchRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     n: jspb.Message.getFieldWithDefault(msg, 1, 0),
     vList: (f = jspb.Message.getRepeatedFloatingPointField(msg, 2)) == null ? undefined : f,
-    sparsev: jspb.Message.getFieldWithDefault(msg, 3, "")
+    sparsev: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    collection: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
 
   if (includeInstance) {
@@ -1100,6 +1150,10 @@ proto.feature.SearchRequest.deserializeBinaryFromReader = function(msg, reader) 
       var value = /** @type {string} */ (reader.readString());
       msg.setSparsev(value);
       break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setCollection(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1147,6 +1201,13 @@ proto.feature.SearchRequest.serializeBinaryToWriter = function(message, writer) 
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getCollection();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
       f
     );
   }
@@ -1223,6 +1284,24 @@ proto.feature.SearchRequest.prototype.getSparsev = function() {
  */
 proto.feature.SearchRequest.prototype.setSparsev = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional string collection = 4;
+ * @return {string}
+ */
+proto.feature.SearchRequest.prototype.getCollection = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.feature.SearchRequest} returns this
+ */
+proto.feature.SearchRequest.prototype.setCollection = function(value) {
+  return jspb.Message.setProto3StringField(this, 4, value);
 };
 
 
