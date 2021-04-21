@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 
-let Client = require('client');
+let Client = require('./client');
 exports.Client = Client;
 
 class ReplicaSet {
