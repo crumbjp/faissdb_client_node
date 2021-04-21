@@ -2,99 +2,88 @@
 
 const _ = require('lodash');
 
-const FeatureGrpc = require('./grpc_feature/feature_grpc_pb');
-const Feature = require('./grpc_feature/feature_pb');
-const FeatureClient = FeatureGrpc.FeatureClient;
-const GrpcJs = require('@grpc/grpc-js');
+let Client = require('client');
+exports.Client = Client;
 
-class Client {
+class ReplicaSet {
   constructor(options) {
-    this.host = options.host;
-    this.port = options.port;
+    this.clients = _.map(options.connects, connect => new Client({connect: connect}));
+    this.primary = null;
+    this.secondaries = [];
+    this.lastPrepare = null;
+    this.prepareInterval = options.prepareInterval || 5000;
   }
 
   init() {
-    this.client = new FeatureClient(
-      `${this.host}:${this.port}`,
-      GrpcJs.credentials.createInsecure(),
-      {
-        "grpc.keepalive_time_ms": 3000,
-        "grpc.keepalive_timeout_ms": 1000,
-        "grpc.keepalive_permit_without_calls": 1,
-        "grpc.max_send_message_length": 100*1024*1024,
-      }
-    );
+    _.each(this.clients, client => client.init());
   }
 
-  _request(method, req) {
-    return new Promise((resolve, reject) => {
-      this.client[method](req, (err, resp) => {
-        if(err) {
-          return reject(err);
+  _prepare() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        if(!this.lastPrepare || (this.lastPrepare + this.prepareInterval) < new Date().getTime()) {
+          let promises = [];
+          for(let client of this.clients) {
+            if(!client.isPrimary() && !client.isSecondary()) {
+              promises.push(client.status());
+            }
+          }
+          try {
+            await Promise.all(promises);
+          } catch(e) {
+            // Nothing to do
+          }
+          this.primary = null;
+          this.secondaries = [];
+          for(let client of this.clients) {
+            if(client.isPrimary()) {
+              this.primary = client;
+            } else if(client.isSecondary()) {
+              this.secondaries.push(client);
+            }
+          }
+          this.lastPrepare = new Date().getTime();
         }
-        resolve(resp);
-      });
+        resolve();
+      } catch(e) {
+        reject(e);
+      }
     });
   }
 
-  toSparse(obj) {
-    return _.map(obj, (v, k) => `${k}:${obj[k]}`).join(',');
-  }
-
-  /*
-   * datas: [data]
-   * data: {
-   *   key: string
-   *   v: `dense vector array` or `sparse vector object`
-   *   collections: `[string] index names`
-   * }
-  */
-  async set(inputs) {
-    let setRequest = new Feature.SetRequest();
-    for(let input of inputs) {
-      let data = new Feature.Data();
-      data.setKey(input.key);
-      if(_.isArray(input.v)) {
-        data.setVList(input.v);
-      } else {
-        data.setSparsev(this.toSparse(input.v));
-      }
-      data.setCollectionsList(input.collections);
-      setRequest.addData(data);
+  async set(inputs, options = {}) {
+    await this._prepare();
+    if(!this.primary) {
+      throw "No primary found";
     }
-    let reply = await this._request('set', setRequest);
-    return [reply.getNstored(), reply.getNerror()];
+    return this.primary.set(inputs, options);
   }
 
-  async train(proportion, force = false) {
-    let trainRequest = new Feature.TrainRequest();
-    trainRequest.setProportion(proportion);
-    trainRequest.setForce(force);
-    await this._request('train', trainRequest);
-  }
-
-  async del(keys) {
-    let delRequest = new Feature.DelRequest();
-    delRequest.setKeyList(keys);
-    await this._request('del', delRequest);
-  }
-
-  /*
-   * v: `dense vector array` or `sparse vector object`
-   * collections: string target index name
-  */
-  async search(collection, n, v) {
-    let searchRequest = new Feature.SearchRequest();
-    searchRequest.setCollection(collection);
-    searchRequest.setN(n);
-    if(_.isArray(v)) {
-      searchRequest.setVList(v);
-    } else {
-      searchRequest.setSparsev(this.toSparse(v));
+  async train(proportion, options = {}) {
+    await this._prepare();
+    if(!this.primary) {
+      throw "No primary found";
     }
-    let reply = await this._request('search', searchRequest);
-    return [reply.getKeysList(), reply.getDistancesList()];
+    return this.primary.train(proportion, options);
+  }
+
+  async del(keys, options = {}) {
+    await this._prepare();
+    if(!this.primary) {
+      throw "No primary found";
+    }
+    return this.primary.del(keys, options);
+  }
+
+  async search(collection, n, v, options = {}) {
+    await this._prepare();
+    let client = _.chain(this.secondaries).filter(secondary => secondary.isReady()).sample().value();
+    client = client || (this.primary.isReady() ? this.primary : null);
+    if(!client) {
+      throw "No valid node found";
+    }
+    return this.primary.search(collection, n, v, options);
   }
 }
 
-module.exports = Client;
+exports.ReplicaSet = ReplicaSet;

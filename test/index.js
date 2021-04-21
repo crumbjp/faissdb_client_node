@@ -1,6 +1,6 @@
 'use strict';
 const _ = require('lodash');
-const FaissdbClient = require("index");
+const FaissdbReplicaSet = require("index").ReplicaSet;
 const N = 300;
 
 const normalize = (vector) => {
@@ -8,9 +8,14 @@ const normalize = (vector) => {
   return vector.map(v => v/l);
 };
 
-let faissdbClient = new FaissdbClient({
-  host: "localhost",
-  port: 20021
+let faissdbClient = new FaissdbReplicaSet({
+  connects: [{
+    host: "localhost",
+    port: 20021
+  }, {
+    host: "localhost",
+    port: 20022
+  }]
 });
 faissdbClient.init();
 
@@ -18,7 +23,7 @@ faissdbClient.init();
   let delKeys = [];
   let inputs = [];
   for(let i = 0; i < N; i++){
-    let key = `kk${i}`;
+    let key = `k${i}`;
     let collections = [];
     if(i%3 == 0) {
       collections = ['weekly'];
@@ -32,7 +37,9 @@ faissdbClient.init();
       collections: collections,
     });
   }
+  console.log('set');
   await faissdbClient.set(inputs);
+  console.log('train');
   await faissdbClient.train(1);
   let searchResults = await faissdbClient.search('', 10, normalize([30, 70]));
   console.log("main", _.zip(searchResults[0], searchResults[1]));
@@ -41,5 +48,12 @@ faissdbClient.init();
   await faissdbClient.del(delKeys);
   searchResults = await faissdbClient.search('', 10, normalize([30, 70]));
   console.log("DELed", _.zip(searchResults[0], searchResults[1]));
+  await (() => new Promise((resolve) => setTimeout(() => resolve(), 10000)))();
+  searchResults = await faissdbClient.search('', 10, normalize([30, 70]));
+  console.log("Sleeped", _.zip(searchResults[0], searchResults[1]));
+  await (() => new Promise((resolve) => setTimeout(() => resolve(), 10000)))();
+  searchResults = await faissdbClient.search('', 10, normalize([30, 70]));
+  console.log("Sleeped", _.zip(searchResults[0], searchResults[1]));
+
   process.exit(1);
 })();

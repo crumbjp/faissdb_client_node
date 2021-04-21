@@ -9,12 +9,22 @@ import {handleClientStreamingCall} from "@grpc/grpc-js/build/src/server-call";
 import * as feature_pb from "./feature_pb";
 
 interface IFeatureService extends grpc.ServiceDefinition<grpc.UntypedServiceImplementation> {
+    status: IFeatureService_IStatus;
     set: IFeatureService_ISet;
     del: IFeatureService_IDel;
     search: IFeatureService_ISearch;
     train: IFeatureService_ITrain;
 }
 
+interface IFeatureService_IStatus extends grpc.MethodDefinition<feature_pb.StatusRequest, feature_pb.StatusReply> {
+    path: "/feature.Feature/Status";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<feature_pb.StatusRequest>;
+    requestDeserialize: grpc.deserialize<feature_pb.StatusRequest>;
+    responseSerialize: grpc.serialize<feature_pb.StatusReply>;
+    responseDeserialize: grpc.deserialize<feature_pb.StatusReply>;
+}
 interface IFeatureService_ISet extends grpc.MethodDefinition<feature_pb.SetRequest, feature_pb.SetReply> {
     path: "/feature.Feature/Set";
     requestStream: false;
@@ -55,6 +65,7 @@ interface IFeatureService_ITrain extends grpc.MethodDefinition<feature_pb.TrainR
 export const FeatureService: IFeatureService;
 
 export interface IFeatureServer extends grpc.UntypedServiceImplementation {
+    status: grpc.handleUnaryCall<feature_pb.StatusRequest, feature_pb.StatusReply>;
     set: grpc.handleUnaryCall<feature_pb.SetRequest, feature_pb.SetReply>;
     del: grpc.handleUnaryCall<feature_pb.DelRequest, feature_pb.DelReply>;
     search: grpc.handleUnaryCall<feature_pb.SearchRequest, feature_pb.SearchReply>;
@@ -62,6 +73,9 @@ export interface IFeatureServer extends grpc.UntypedServiceImplementation {
 }
 
 export interface IFeatureClient {
+    status(request: feature_pb.StatusRequest, callback: (error: grpc.ServiceError | null, response: feature_pb.StatusReply) => void): grpc.ClientUnaryCall;
+    status(request: feature_pb.StatusRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: feature_pb.StatusReply) => void): grpc.ClientUnaryCall;
+    status(request: feature_pb.StatusRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: feature_pb.StatusReply) => void): grpc.ClientUnaryCall;
     set(request: feature_pb.SetRequest, callback: (error: grpc.ServiceError | null, response: feature_pb.SetReply) => void): grpc.ClientUnaryCall;
     set(request: feature_pb.SetRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: feature_pb.SetReply) => void): grpc.ClientUnaryCall;
     set(request: feature_pb.SetRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: feature_pb.SetReply) => void): grpc.ClientUnaryCall;
@@ -78,6 +92,9 @@ export interface IFeatureClient {
 
 export class FeatureClient extends grpc.Client implements IFeatureClient {
     constructor(address: string, credentials: grpc.ChannelCredentials, options?: Partial<grpc.ClientOptions>);
+    public status(request: feature_pb.StatusRequest, callback: (error: grpc.ServiceError | null, response: feature_pb.StatusReply) => void): grpc.ClientUnaryCall;
+    public status(request: feature_pb.StatusRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: feature_pb.StatusReply) => void): grpc.ClientUnaryCall;
+    public status(request: feature_pb.StatusRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: feature_pb.StatusReply) => void): grpc.ClientUnaryCall;
     public set(request: feature_pb.SetRequest, callback: (error: grpc.ServiceError | null, response: feature_pb.SetReply) => void): grpc.ClientUnaryCall;
     public set(request: feature_pb.SetRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: feature_pb.SetReply) => void): grpc.ClientUnaryCall;
     public set(request: feature_pb.SetRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: feature_pb.SetReply) => void): grpc.ClientUnaryCall;

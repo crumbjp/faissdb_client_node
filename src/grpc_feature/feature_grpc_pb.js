@@ -70,6 +70,28 @@ function deserialize_feature_SetRequest(buffer_arg) {
   return feature_pb.SetRequest.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_feature_StatusReply(arg) {
+  if (!(arg instanceof feature_pb.StatusReply)) {
+    throw new Error('Expected argument of type feature.StatusReply');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_feature_StatusReply(buffer_arg) {
+  return feature_pb.StatusReply.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_feature_StatusRequest(arg) {
+  if (!(arg instanceof feature_pb.StatusRequest)) {
+    throw new Error('Expected argument of type feature.StatusRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_feature_StatusRequest(buffer_arg) {
+  return feature_pb.StatusRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_feature_TrainReply(arg) {
   if (!(arg instanceof feature_pb.TrainReply)) {
     throw new Error('Expected argument of type feature.TrainReply');
@@ -94,6 +116,17 @@ function deserialize_feature_TrainRequest(buffer_arg) {
 
 
 var FeatureService = exports.FeatureService = {
+  status: {
+    path: '/feature.Feature/Status',
+    requestStream: false,
+    responseStream: false,
+    requestType: feature_pb.StatusRequest,
+    responseType: feature_pb.StatusReply,
+    requestSerialize: serialize_feature_StatusRequest,
+    requestDeserialize: deserialize_feature_StatusRequest,
+    responseSerialize: serialize_feature_StatusReply,
+    responseDeserialize: deserialize_feature_StatusReply,
+  },
   set: {
     path: '/feature.Feature/Set',
     requestStream: false,

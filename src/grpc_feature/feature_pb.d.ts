@@ -6,6 +6,49 @@
 
 import * as jspb from "google-protobuf";
 
+export class StatusRequest extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): StatusRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: StatusRequest): StatusRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: StatusRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): StatusRequest;
+    static deserializeBinaryFromReader(message: StatusRequest, reader: jspb.BinaryReader): StatusRequest;
+}
+
+export namespace StatusRequest {
+    export type AsObject = {
+    }
+}
+
+export class StatusReply extends jspb.Message { 
+    getId(): number;
+    setId(value: number): StatusReply;
+    getStatus(): number;
+    setStatus(value: number): StatusReply;
+    getRole(): number;
+    setRole(value: number): StatusReply;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): StatusReply.AsObject;
+    static toObject(includeInstance: boolean, msg: StatusReply): StatusReply.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: StatusReply, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): StatusReply;
+    static deserializeBinaryFromReader(message: StatusReply, reader: jspb.BinaryReader): StatusReply;
+}
+
+export namespace StatusReply {
+    export type AsObject = {
+        id: number,
+        status: number,
+        role: number,
+    }
+}
+
 export class Data extends jspb.Message { 
     getKey(): string;
     setKey(value: string): Data;
