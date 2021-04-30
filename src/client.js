@@ -10,6 +10,7 @@ const GrpcJs = require('@grpc/grpc-js');
 const ROLE_PRIMARY = 1;
 const ROLE_SECONDARY = 2;
 
+const STATUS_NONE = 0;
 const STATUS_READY = 100;
 
 class Client {
@@ -36,6 +37,9 @@ class Client {
     return new Promise((resolve, reject) => {
       this.client[method](req, (err, resp) => {
         if(err) {
+          if(err.code == 14) {
+            this.currentStatus.status = STATUS_NONE;
+          }
           return reject(err);
         }
         resolve(resp);
@@ -57,7 +61,7 @@ class Client {
         role: reply.getRole()
       };
     } catch(e) {
-      // nothing to do
+      this.currentStatus.status = STATUS_NONE;
     }
     return this.currentStatus;
   }
