@@ -17,6 +17,9 @@ let faissdbClient = new FaissdbReplicaSet({
   }, {
     host: "localhost",
     port: 20022
+  }, {
+    host: "localhost",
+    port: 20023
   }],
   debug: true,
   logger: {
